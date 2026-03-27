@@ -7,6 +7,7 @@ import healthRouter from './routes/health.js';
 import campaignsRouter from './routes/campaigns.js';
 import keywordsRouter from './routes/keywords.js';
 import agentRunsRouter from './routes/agentRuns.js';
+import optimizeRouter from './routes/optimize.js';
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use('/health', healthRouter);
 app.use('/campaigns', campaignsRouter);
 app.use('/keywords', keywordsRouter);
 app.use('/agent-runs', agentRunsRouter);
+app.use('/optimize', optimizeRouter);
+
 
 // 404 for unknown routes
 app.use((req, res) => {
