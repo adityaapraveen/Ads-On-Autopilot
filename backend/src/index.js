@@ -1,19 +1,24 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { connectRedis } from './db/redis.js';
+import healthRouter from './routes/health.js';
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-app.use(cors())
-app.use(express.json())
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-const PORT = process.env.PORT 
+app.use('/health', healthRouter);
 
-app.get('/health', (req, res) => {
-    res.json({status:'ok', message:"Backend Running :)"})
-})
+const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, ()=> {
-    console.log(`Server running at port: ${PORT}}`)
-})
+async function start() {
+    await connectRedis();
+    app.listen(PORT, () => {
+        console.log(`Backend running on port ${PORT}`);
+    });
+}
+
+start();
