@@ -12,7 +12,18 @@ import optimizeRouter from './routes/optimize.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const allowedOrigins = process.env.ALLOWED_ORIGIN
+    ? process.env.ALLOWED_ORIGIN.split(',').map(o => o.trim())
+    : ['http://localhost:5173', 'http://localhost:5174'];
+
+app.use(cors({
+    origin: (origin, cb) => {
+        // allow server-to-server / curl (no origin) and any whitelisted origin
+        if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+        cb(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: true,
+}));
 app.use(express.json());
 
 app.use('/health', healthRouter);
