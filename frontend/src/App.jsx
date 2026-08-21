@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Navbar } from './components/Navbar.jsx';
 import { Dashboard } from './pages/Dashboard.jsx';
 import { Campaigns } from './pages/Campaigns.jsx';
@@ -16,10 +16,12 @@ export default function App() {
     try {
       const res = await getOptimizeStatus();
       setIsRunning(res.isRunning);
-    } catch { }
+    } catch {
+      // The optimizer status is best-effort while the API is starting.
+    }
   }, []);
 
-  useEffect(() => { checkStatus(); }, [checkStatus]);
+
   usePolling(checkStatus, 5000);
 
   const handleOptimize = async () => {

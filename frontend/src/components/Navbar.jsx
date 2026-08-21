@@ -143,6 +143,7 @@ function NavLink({ to, label, icon }) {
                 }
             }}
         >
+            <span aria-hidden="true">{icon}</span>
             {label}
         </Link>
     );
