@@ -4,10 +4,6 @@ export function StatCard({ label, value, sub, trend, accent }) {
     const trendColor =
         trend === 'up' ? '#10b981' : trend === 'down' ? '#ef4444' : 'var(--text-muted)';
 
-    const glowColor = accent
-        ? `${accent}18`
-        : trend === 'up' ? 'rgba(16,185,129,0.06)' : 'transparent';
-
     return (
         <div style={{
             background: 'var(--bg-card)',

@@ -13,16 +13,20 @@ export function Dashboard() {
     const [campaigns, setCampaigns] = useState([]);
     const [runs, setRuns] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        Promise.all([getCampaigns(), getAgentRuns()]).then(([c, r]) => {
-            setCampaigns(c.data);
-            setRuns(r.data);
-            setLoading(false);
-        });
+        Promise.all([getCampaigns(), getAgentRuns()])
+            .then(([c, r]) => {
+                setCampaigns(c.data);
+                setRuns(r.data);
+            })
+            .catch((err) => setError(err.message || 'Unable to load dashboard data.'))
+            .finally(() => setLoading(false));
     }, []);
 
     if (loading) return <LoadingScreen />;
+    if (error) return <ErrorScreen message={error} />;
 
     const totalSpend = campaigns.reduce((s, c) => s + Number(c.spend), 0);
     const totalRevenue = campaigns.reduce((s, c) => s + Number(c.revenue), 0);
@@ -266,6 +270,16 @@ function LoadingScreen() {
                 LOADING SYSTEM DATA...
             </span>
             <style>{`@keyframes spin-slow { to { transform: rotate(360deg); } }`}</style>
+        </div>
+    );
+}
+
+function ErrorScreen({ message }) {
+    return (
+        <div style={{ maxWidth: '640px', margin: '80px auto', padding: '24px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            <h1 style={{ color: 'var(--text-primary)', marginBottom: '8px' }}>Dashboard unavailable</h1>
+            <p>{message}</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', marginTop: '12px' }}>Check that the API and its data services are running.</p>
         </div>
     );
 }
